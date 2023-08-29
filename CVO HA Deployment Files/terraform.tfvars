@@ -5,7 +5,7 @@ refresh_token = "enter refresh token here"
 gcp_connector_deploy_bool = true
 
 
-#if aws_connector_deploy_book is set to true
+#connectordetails
 gcp_connector_name = "connector name"
 gcp_project = "project id"
 user_email = "gcp user email"
