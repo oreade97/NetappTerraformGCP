@@ -236,7 +236,23 @@ resource "google_project_iam_member" "service_account_role_binding" {
   member  = "serviceAccount:${google_service_account.netapp_connector.email}"
 }
 
+# Get the connector service account json key
 
+resource "google_service_account_key" "netapp_connector" {
+  service_account_id = google_service_account.netapp_connector.name
+  public_key_type    = "TYPE_X509_PEM_FILE"
+}
+
+# Convert public key to local json file
+
+resource "local_file" "netapp_connector" {
+    content  = base64decode(google_service_account_key.netapp_connector.private_key)
+    filename = "../../netapp_connector.json"
+
+      depends_on = [
+    google_service_account.netapp_connector
+  ]
+}
 
 #Create Service Account for Tiering
 
@@ -267,26 +283,62 @@ resource "google_service_account_iam_binding" "tiering_user" {
 
 
 #Deploy BlueXP connector
-resource "netapp-cloudmanager_connector_gcp" "demo-connector" {
+
+resource "netapp-cloudmanager_connector_gcp" "ore-connector" {
   name = var.gcp_connector_name 
   zone = var.gcp_connector_zone
   company = var.gcp_connector_company
   project_id = var.gcp_project
   service_account_email = google_service_account.netapp_connector.email
   service_account_path = var.gcp_connector_service_account_path
-  
 }
 
+
+
 #Deploy CVO 
+
 resource "netapp-cloudmanager_cvo_gcp" "cl-cvo-gcp" {
+  depends_on = [netapp-cloudmanager_connector_gcp.ore-connector]
   provider = netapp-cloudmanager
   name = var.gcp_cvo_name
   project_id = var.gcp_cvo_project_id
   zone = var.gcp_cvo_zone
-  gcp_service_account = var.gcp_cvo_gcp_service_account
+  gcp_service_account = google_service_account.cvo_tiering.email
   svm_password = var.gcp_cvo_svm_password
-  client_id = netapp-cloudmanager_connector_gcp.demo-connector.client_id
+  client_id = netapp-cloudmanager_connector_gcp.ore-connector.client_id
   license_type = var.gcp_cvo_license_type
   capacity_package_name = var.gcp_cvo_capacity_package_name
 }
 
+
+#Create CVO NFSv3 volume
+
+resource "netapp-cloudmanager_volume" "tf-nfs" {
+  depends_on = [netapp-cloudmanager_cvo_gcp.cl-cvo-gcp]
+  provider = netapp-cloudmanager
+  volume_protocol = "nfs"
+  name = "vol1"
+  size = 10
+  unit = "GB"
+  provider_volume_type = "pd-standard"
+  enable_thin_provisioning = true
+  enable_compression = true
+  enable_deduplication = true
+  capacity_tier = "none"
+  export_policy_type = "custom"
+  export_policy_ip = ["0.0.0.0/0"]
+  export_policy_nfs_version = ["nfs3"]
+  snapshot_policy_name = "sp1"
+  snapshot_policy {
+     schedule {
+       schedule_type = "5min"
+       retention = 10
+    }
+    schedule {
+       schedule_type = "hourly"
+       retention = 5
+    }
+  }
+  working_environment_id = netapp-cloudmanager_cvo_gcp.cl-cvo-gcp.id
+  client_id = netapp-cloudmanager_connector_gcp.ore-connector.client_id
+}
