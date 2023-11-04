@@ -24,7 +24,6 @@ variable "gcp_connector_company" {
   description = "Name of the org"
 }
 
-
 variable "gcp_connector_name" {
   description = "Name of the GCP Connector"
 }
@@ -37,6 +36,10 @@ variable "gcp_connector_zone" {
   description = "Zone for GCP Connector"
 }
 
+variable "gcp_connector_service_account_email" {
+  description = "Service Account E-Mail"
+}
+
 variable "gcp_connector_service_account_path" {
   description = "Path to the JSON GCP Key"
 }
@@ -44,10 +47,6 @@ variable "gcp_connector_service_account_path" {
 
 variable "gcp_cvo_name" {
   description = "Name of the CVO Instance"
-}
-
-variable "account_id" {
-  description = "account id"
 }
 
 variable "gcp_cvo_project_id" {
@@ -58,12 +57,12 @@ variable "gcp_cvo_zone" {
   description = "Zone for NetApp CVO"
 }
 
-variable "gcp_cvo_svm_password" {
-  description = "CVO SVM Password"
+variable "gcp_cvo_gcp_service_account" {
+  description = "Service Account E-Mail"
 }
 
-variable "gcp_cvo_svm_name" {
-  description = "CVO SVM Name"
+variable "gcp_cvo_svm_password" {
+  description = "CVO SVM Password"
 }
 
 variable "gcp_cvo_capacity_package_name" {
