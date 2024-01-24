@@ -1,11 +1,11 @@
-volume_name         = "ipvol"
+volume_name = "ipvol"
 #protocol            = "NFSv3"
 size                = 1024      #change this to what is needed
 service_level       = "premium" #change to desired service level
 network             = "gcnvvpc"
 storage_class       = "hardware"
 zone                = "us-east4-a"
-gcp_project         = "rt11069335"
+gcp_project         = "rt11072365"
 gcp_service_account = "gcpkey.json"
-region = "us-east4"
+region              = "us-east4"
 #project_number = "415906964094"
