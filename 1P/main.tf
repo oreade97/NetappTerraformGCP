@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "google" {
-  credentials = "./creds/gcpkey.json"
+  credentials = file("gcpkey.json")
   project     = var.gcp_project
   #region      = var.network # Change to your desired region
 }
