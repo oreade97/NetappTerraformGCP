@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("gcpkey.json")
+  credentials = "./creds/gcpkey.json"
   project     = var.gcp_project
   #region      = var.network # Change to your desired region
 }
@@ -50,7 +50,7 @@ resource "google_service_networking_connection" "private_access_connection" {
   network                 = var.network
   service                 = "netapp.servicenetworking.goog"
   reserved_peering_ranges = [google_compute_global_address.private_ip_alloc.name]
-
+  
 }
 
 
