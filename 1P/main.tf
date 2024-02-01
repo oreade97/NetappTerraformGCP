@@ -92,29 +92,3 @@ resource "google_netapp_volume" "test_volume" {
 }
 
 
-resource "google_netapp_volume" "test_volume" {
-  depends_on   = [google_netapp_storage_pool.test_pool]
-  location     = "us-east4"
-  name         = "test-volume"
-  capacity_gib = "100"
-  share_name   = "test-volume"
-  storage_pool = "test-pool"
-  protocols    = ["NFSV3"]
-  snapshot_policy {
-    enabled = true
-    daily_schedule {
-      snapshots_to_keep = 7
-      hour              = 10
-      minute            = 1
-    }
-  }
-  export_policy {
-    rules {
-      allowed_clients = "0.0.0.0/0"
-      access_type     = "READ_WRITE"
-      nfsv3           = true
-      nfsv4           = false
-    }
-  }
-
-}
