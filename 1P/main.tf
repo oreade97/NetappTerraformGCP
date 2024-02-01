@@ -92,12 +92,12 @@ resource "google_netapp_volume" "test_volume" {
 }
 
 
-resource "google_netapp_volume" "test_volume2" {
+resource "google_netapp_volume" "test_volume" {
   depends_on   = [google_netapp_storage_pool.test_pool]
   location     = "us-east4"
-  name         = "test-volume2"
+  name         = "test-volume"
   capacity_gib = "100"
-  share_name   = "test-volume2"
+  share_name   = "test-volume"
   storage_pool = "test-pool"
   protocols    = ["NFSV3"]
   snapshot_policy {
