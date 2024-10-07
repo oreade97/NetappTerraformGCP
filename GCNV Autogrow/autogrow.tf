@@ -135,7 +135,7 @@ resource "google_monitoring_alert_policy" "alert_policy" {
       | group_by 1m, [value_allocated_bytes_mean: mean(value.allocated_bytes)] }
   | ratio
   | every 1m
-  | condition gt(ratio, 80 '1')
+  | condition gt(ratio, 10 '1')
 
 EOF
       duration = "0s"
